@@ -3,8 +3,22 @@ require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 
+const {
+  controlNewUser,
+  controlGetUser,
+  controlLogin,
+} = require("./controllers/users");
+
+const {
+  controlGetPhotos,
+  controlNewPhoto,
+  controlGetPhotoByID,
+  controlDeletePhoto,
+} = require("./controllers/photos");
+
 const app = express();
 
+app.use(express.json());
 app.use(morgan("dev"));
 
 //RUTAS
@@ -17,7 +31,8 @@ app.post("/login", controlLogin);
 //Rutas de photos
 app.post("/", controlGetPhotos);
 app.get("/", controlNewPhoto);
-app.get("/photos/:id", controlGetPhoto);
+app.get("/photos/:id", controlGetPhotoByID);
+app.delete("/photos/:id", controlDeletePhoto);
 
 //MIDDLEWARE 404
 app.use((req, res) => {
