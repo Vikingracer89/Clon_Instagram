@@ -1,4 +1,5 @@
 const { generateError } = require("../helpers");
+const { createUser } = require("../db/usersDB");
 
 const controlNewUser = async (req, res, next) => {
   try {
@@ -9,9 +10,11 @@ const controlNewUser = async (req, res, next) => {
       throw generateError("Tienes que poner un email y una contraseña", 400);
     }
 
+    const id = await createUser(email, password);
+
     res.send({
-      status: "error",
-      message: "Not implemented yet",
+      status: "ok",
+      message: `User created with id: ${id}`,
     });
   } catch (error) {
     next(error);
