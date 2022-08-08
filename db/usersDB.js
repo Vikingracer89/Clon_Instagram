@@ -31,10 +31,60 @@ const createUser = async (email, password) => {
 
     return newUser.insertId;
   } finally {
-    if (connection) connection.release;
+    if (connection) connection.release();
+  }
+};
+
+const getUserById = async (id) => {
+  let connection;
+  try {
+    connection = await getConnection();
+    const [result] = await connection.query(
+      `
+        SELECT id, email,created_at FROM users WHERE id=?
+        `,
+      `
+        SELECT photo, text, created_at FROM photos WHERE user_id=?
+        `,
+      [id]
+    );
+
+    if (result.length === 0) {
+      throw generateError(
+        "No hay ningun usuario que coincida con la busqueda",
+        404
+      );
+    }
+
+    return result[0];
+  } finally {
+    if (connection) connection.release();
+  }
+};
+
+const getUserByemail = async (email) => {
+  let connection;
+  try {
+    connection = await getConnection();
+    const [result] = await connection.query(
+      `
+          SELECT * FROM users WHERE email=?
+          `,
+      [email]
+    );
+
+    if (result.length === 0) {
+      throw generateError("No hay ningun usuario con ese email", 404);
+    }
+
+    return result[0];
+  } finally {
+    if (connection) connection.release();
   }
 };
 
 module.exports = {
   createUser,
+  getUserById,
+  getUserByemail,
 };
