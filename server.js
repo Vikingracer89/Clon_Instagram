@@ -2,6 +2,13 @@ require("dotenv").config();
 
 const express = require("express");
 const morgan = require("morgan");
+const engine = require("mate - ejs");
+const path = require("path");
+const session = require("cookie-session");
+
+app.engine("ejs", engine);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 const {
   controlNewUser,
@@ -20,8 +27,16 @@ const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(
+  session({
+    secret: "mysecretword",
+    signed: true,
+  })
+);
 
 //RUTAS
+
+app.use(require("/.routes/index"));
 
 //Rutas de usuarios
 app.post("/users", controlNewUser);
@@ -50,6 +65,9 @@ app.use((error, req, res, next) => {
     message: error.message,
   });
 });
+//Static files//
+
+//Starting the server//
 
 app.listen(3000, () => {
   //console.log("servidor ON");
