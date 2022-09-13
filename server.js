@@ -26,7 +26,10 @@ const {
 const app = express();
 
 app.use(express.json());
+
+// middleware morgan
 app.use(morgan("dev"));
+
 app.use(
   session({
     secret: "mysecretword",
