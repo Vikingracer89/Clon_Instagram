@@ -1,77 +1,63 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const express = require("express");
-const morgan = require("morgan");
-const engine = require("mate - ejs");
-const path = require("path");
-const session = require("cookie-session");
-
-app.engine("ejs", engine);
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+const express = require('express');
+const morgan = require('morgan');
+const fileUpload = require('express-fileupload');
 
 const {
-  controlNewUser,
-  controlGetUser,
-  controlLogin,
-} = require("./controllers/users");
+  newUserController,
+  getUserController,
+  loginController,
+} = require('./controllers/users');
 
 const {
-  controlGetPhotos,
-  controlNewPhoto,
-  controlGetPhotoByID,
-  controlDeletePhoto,
-} = require("./controllers/photos");
+  getPhotosController,
+  newPhotoController,
+  getSinglePhotoController,
+  deletePhotoController,
+} = require('./controllers/Photos');
 
+const { authUser } = require('./middlewares/auth');
+const likePhoto = require('./controllers/likeEntry');
+//falta middleware cors
 const app = express();
 
+app.use(fileUpload());
 app.use(express.json());
+app.use(morgan('dev'));
+app.use('/uploads', express.static('./uploads'));
 
-// middleware morgan
-app.use(morgan("dev"));
+//Rutas de usuario
+app.post('/user', newUserController);
+app.get('/user/:id', getUserController);
+app.post('/user/login', loginController);
 
-app.use(
-  session({
-    secret: "mysecretword",
-    signed: true,
-  })
-);
+//Rutas de post
+app.post('/photos', authUser, newPhotoController);
+app.get('/photos', getPhotosController);
+app.get('/photos/:id', authUser, getSinglePhotoController);
+app.delete('/photos/:id', authUser, deletePhotoController);
+app.post('/photos/:id/like', authUser, likePhoto);
 
-//RUTAS
-
-app.use(require("/.routes/index"));
-
-//Rutas de usuarios
-app.post("/users", controlNewUser);
-app.get("/users/:id", controlGetUser);
-app.post("/login", controlLogin);
-
-//Rutas de photos
-app.post("/", controlGetPhotos);
-app.get("/", controlNewPhoto);
-app.get("/photos/:id", controlGetPhotoByID);
-app.delete("/photos/:id", controlDeletePhoto);
-
-//MIDDLEWARE 404
+// Middleware de 404
 app.use((req, res) => {
   res.status(404).send({
-    status: "error",
-    message: "Not Found",
+    status: 'error',
+    message: 'Not found',
   });
 });
 
-//MIDDLEWARE ERRORES
+// Middleware de gestión de errores
 app.use((error, req, res, next) => {
   console.error(error);
+
   res.status(error.httpStatus || 500).send({
-    status: "error",
+    status: 'error',
     message: error.message,
   });
 });
-//Static files//
 
-//Starting the server//
-
+// Lanzamos el servidor
 app.listen(3000, () => {
-  //console.log("servidor ON");
+  console.log('Servidor funcionando! 👻');
 });

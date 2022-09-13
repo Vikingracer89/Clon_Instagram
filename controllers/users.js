@@ -1,27 +1,26 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { generateError } = require("../helpers");
-const { createUser, getUserById, getUserByemail } = require("../db/usersDB");
-const joi = require("@hapi/joi");
-const Joi = require("@hapi/joi");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { generateError } = require('../helpers');
+const { createUser, getUserById, getUserByEmail } = require('../db/users');
+const Joi = require('joi');
 
-const controlNewUser = async (req, res, next) => {
+const newUserController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const schema = joi.object().keys({
-      email: Joi.email().required(),
-      password: joi.string.min(4).max(10).required(),
+    const schema = Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().min(4).max(10).required(),
     });
     const validation = schema.validate({ email, password });
 
     if (validation.error) {
-      throw generateError("Los datos introducidos no son validos", 400);
+      throw generateError('Los datos introducidos no son validos', 400);
     }
 
     const id = await createUser(email, password);
 
     res.send({
-      status: "ok",
+      status: 'ok',
       message: `User created with id: ${id}`,
     });
   } catch (error) {
@@ -29,58 +28,66 @@ const controlNewUser = async (req, res, next) => {
   }
 };
 
-const controlGetUser = async (req, res, next) => {
+const getUserController = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const schema = joi.number().positive().integer().requiered();
+    const schema = Joi.number().positive().integer().requiered();
     const validation = schema.validate(req.params);
 
     if (validation.error) {
-      throw generateError("El usuario debe ser un numero", 401);
+      throw generateError('El usuario debe ser un numero', 401);
     }
 
     const user = await getUserById(id);
+
     res.send({
-      status: "ok",
-      message: user,
+      status: 'ok',
+      data: user,
     });
   } catch (error) {
     next(error);
   }
 };
 
-const controlLogin = async (req, res, next) => {
+const loginController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const schema = joi.object().keys({
-      email: Joi.email().required(),
-      password: joi.string.min(4).max(10).required(),
+    const schema = Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(4).max(10).required(),
     });
     const validation = schema.validate({ email, password });
 
     if (validation.error) {
-      throw generateError("Los datos introducidos no son validos", 400);
+      throw generateError('Los datos introducidos no son validos', 400);
     }
 
-    const user = await getUserByemail(email);
+    // Recojo los datos de la base de datos del usuario con ese mail
+    const user = await getUserByEmail(email);
 
+    // Compruebo que las contraseñas coinciden
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
       throw generateError(
-        "El usuario o la contraseña contraseña no son validos",
+        'El usuario o la contraseña contraseña no son validos',
         401
       );
     }
 
+    // Creo el payload del token
     const payload = { id: user.id };
 
-    const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "1d" });
+    // Firmo el token
+    const token = jwt.sign(payload, process.env.SECRET, {
+      expiresIn: '30d',
+    });
 
+    // Envío el token
     res.send({
-      status: "ok",
+      status: 'ok',
       data: token,
     });
   } catch (error) {
@@ -89,7 +96,7 @@ const controlLogin = async (req, res, next) => {
 };
 
 module.exports = {
-  controlNewUser,
-  controlGetUser,
-  controlLogin,
+  newUserController,
+  getUserController,
+  loginController,
 };
