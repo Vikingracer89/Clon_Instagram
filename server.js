@@ -35,7 +35,7 @@ app.post('/user/login', loginController);
 //Rutas de posts
 app.get('/post/:id', getPostsController);
 app.post('/post', newPostsController);
-app.get('/post/:id', getSingleTweetCOntroller);
+app.get('/post/:id', getSinglePostCOntroller);
 app.delete('/post/id', deletePostController);
 
 // Middleware de 404
