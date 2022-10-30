@@ -1,4 +1,4 @@
-require('dotenv').config();
+nrequire('dotenv').config();
 
 const { getConnection } = require('./db');
 
@@ -7,16 +7,12 @@ async function main() {
 
   try {
     connection = await getConnection();
+    
+    console.log('Borrando tablas existentes');
+     await connection.query('DROP TABLE IF EXISTS posts')
+   await connection.query('DROP TABLE IF EXISTS users')
 
-    //¡¡¡ESTO BORRA LA DB USAR SOLO EN PRUEBAS!!!
-    //console.log('Borrando tablas existentes');
-    //await connection.query('DROP TABLE IF EXISTS likes');
-    //await connection.query('DROP TABLE IF EXISTS photo');
-    //await connection.query('DROP TABLE IF EXISTS users');
-    //¡¡¡ESTO BORRA LA DB USAR SOLO EN PRUEBAS!!!
-
-    //console.log('Creando tablas');
-
+     console.log('Creando tablas');
     await connection.query(`
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -27,13 +23,13 @@ async function main() {
     `);
 
     await connection.query(`
-      CREATE TABLE photo (
+      CREATE TABLE posts (
         id INTEGER PRIMARY KEY AUTO_INCREMENT,
         user_id INTEGER NOT NULL,
-        text VARCHAR(280) NOT NULL,
+        text VARCHAR (200) NOT NULL,
         image VARCHAR(100),
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES user(id)
         );
     `);
 
@@ -49,7 +45,7 @@ async function main() {
        );
      `);
   } catch (error) {
-    //console.error(error);
+    console.error(error);
   } finally {
     if (connection) connection.release();
     process.exit();

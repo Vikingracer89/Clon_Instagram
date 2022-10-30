@@ -1,29 +1,29 @@
 const {
-  createPhoto,
-  getAllPhotos,
-  getPhotoById,
-  detelePhotoById,
-  getPhotoByText,
-} = require('../db/Photos');
+  createPost,
+  getAllPosts,
+  getPostById,
+  detelePostById,
+  getPostByText,
+} = require('../db/Pots');
 const { generateError, createPathIfNotExists } = require('../helpers');
 const path = require('path');
 const sharp = require('sharp');
 const { nanoid } = require('nanoid');
 
-const getPhotosController = async (req, res, next) => {
+const getPostsController = async (req, res, next) => {
   try {
-    const photos = await getAllPhotos();
+    const post = await getAllPots();
 
     res.send({
       status: 'ok',
-      data: photos,
+      data: posts,
     });
   } catch (error) {
     next(error);
   }
 };
 
-const newPhotoController = async (req, res, next) => {
+const newPostController = async (req, res, next) => {
   try {
     const { text } = req.body;
 
@@ -50,7 +50,7 @@ const newPhotoController = async (req, res, next) => {
       await image.toFile(path.join(uploadsDir, imageFileName));
     }
 
-    const id = await createPhoto(req.userId, text, imageFileName);
+    const id = await createPost(req.userId, text, imageFileName);
 
     res.send({
       status: 'ok',
@@ -61,30 +61,30 @@ const newPhotoController = async (req, res, next) => {
   }
 };
 
-const getSinglePhotoController = async (req, res, next) => {
+const getSinglePostController = async (req, res, next) => {
   try {
     const { text } = req.params;
-    const photo = await getPhotoByText(text);
+    const post = await getPostByText(text);
 
     res.send({
       status: 'ok',
-      data: photo,
+      data: post,
     });
   } catch (error) {
     next(error);
   }
 };
 
-const deletePhotoController = async (req, res, next) => {
+const deletePostController = async (req, res, next) => {
   try {
     //req.userId
     const { id } = req.params;
 
     // Conseguir la información del post que quiero borrar
-    const photo = await getPhotoById(id);
+    const post = await getPostById(id);
 
     // Comprobar que el usuario del token es el mismo que creó el post
-    if (req.userId !== photo.user_id) {
+    if (req.userId !== post.user_id) {
       throw generateError(
         'Estás intentando borrar un post que no es tuyo',
         401
@@ -92,7 +92,7 @@ const deletePhotoController = async (req, res, next) => {
     }
 
     // Borrar el post
-    await detelePhotoById(id);
+    await detelePostById(id);
 
     res.send({
       status: 'ok',
@@ -104,8 +104,8 @@ const deletePhotoController = async (req, res, next) => {
 };
 
 module.exports = {
-  getPhotosController,
-  newPhotoController,
-  getSinglePhotoController,
-  deletePhotoController,
+  getPostsController,
+  newPostController,
+  getSinglePostController,
+  deletePostController,
 };
