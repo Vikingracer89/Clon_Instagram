@@ -11,10 +11,10 @@ const {
 } = require('./controllers/users');
 
 const {
-  getPhotosController,
-  newPhotoController,
-  getSinglePhotoController,
-  deletePhotoController,
+  getPostsController,
+  newPostsController,
+  getSinglePostController,
+  deletePostController,
 } = require('./controllers/Photos');
 
 const { authUser } = require('./middlewares/auth');
@@ -32,12 +32,11 @@ app.post('/user', newUserController);
 app.get('/user/:id', getUserController);
 app.post('/user/login', loginController);
 
-//Rutas de post
-app.post('/photos', authUser, newPhotoController);
-app.get('/photos', getPhotosController);
-app.get('/photos/:id', authUser, getSinglePhotoController);
-app.delete('/photos/:id', authUser, deletePhotoController);
-app.post('/photos/:id/like', authUser, likePhoto);
+//Rutas de posts
+app.get('/post/:id', getPostsController);
+app.post('/post', newPostsController);
+app.get('/post/:id', getSingleTweetCOntroller);
+app.delete('/post/id', deletePostController);
 
 // Middleware de 404
 app.use((req, res) => {
