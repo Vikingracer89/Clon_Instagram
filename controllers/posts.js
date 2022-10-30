@@ -4,7 +4,7 @@ const {
   getPostById,
   detelePostById,
   getPostByText,
-} = require('../db/Pots');
+} = require('../db/Posts');
 const { generateError, createPathIfNotExists } = require('../helpers');
 const path = require('path');
 const sharp = require('sharp');
@@ -12,7 +12,7 @@ const { nanoid } = require('nanoid');
 
 const getPostsController = async (req, res, next) => {
   try {
-    const post = await getAllPots();
+    const post = await getAllPosts();
 
     res.send({
       status: 'ok',
