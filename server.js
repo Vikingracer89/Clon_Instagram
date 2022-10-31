@@ -15,7 +15,7 @@ const {
   newPostsController,
   getSinglePostController,
   deletePostController,
-} = require('./controllers/Photos');
+} = require('./controllers/Posts');
 
 const { authUser } = require('./middlewares/auth');
 const likePost = require('./controllers/likeEntry');
@@ -33,9 +33,10 @@ app.get('/user/:id', getUserController);
 app.post('/user/login', loginController);
 
 //Rutas de posts
+app.post('/', getPostsController);
 app.get('/post/:id', getPostsController);
 app.post('/post', newPostsController);
-app.get('/post/:id', getSinglePostCOntroller);
+app.get('/post/:id', getSinglePostController);
 app.delete('/post/id', deletePostController);
 
 // Middleware de 404
