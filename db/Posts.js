@@ -1,7 +1,7 @@
 const { generateError } = require('../helpers');
 const { getConnection } = require('./db');
 
-const detelePhotoById = async (id) => {
+const detelePostById = async (id) => {
   let connection;
 
   try {
@@ -43,7 +43,7 @@ const getPhotoById = async (id) => {
   }
 };
 
-const getPhotoByText = async (text) => {
+const getPostByText = async (text) => {
   let connection;
 
   try {
@@ -66,7 +66,7 @@ const getPhotoByText = async (text) => {
   }
 };
 
-const getAllPhotos = async () => {
+const getAllPosts = async () => {
   let connection;
 
   try {
@@ -82,7 +82,7 @@ const getAllPhotos = async () => {
   }
 };
 
-const createPhoto = async (userId, text, image = '') => {
+const createPost = async (userId, text, image = '') => {
   let connection;
 
   try {
@@ -103,9 +103,9 @@ const createPhoto = async (userId, text, image = '') => {
 };
 
 module.exports = {
-  createPhoto,
-  getAllPhotos,
+  createPost,
+  getAllPosts,
   getPhotoById,
-  detelePhotoById,
-  getPhotoByText,
+  detelePostById,
+  getPostByText,
 };

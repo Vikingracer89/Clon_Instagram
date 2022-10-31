@@ -18,7 +18,7 @@ const {
 } = require('./controllers/Photos');
 
 const { authUser } = require('./middlewares/auth');
-const likePhoto = require('./controllers/likeEntry');
+const likePost = require('./controllers/likeEntry');
 //falta middleware cors
 const app = express();
 
