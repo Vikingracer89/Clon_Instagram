@@ -12,7 +12,7 @@ const {
 
 const {
   getPostsController,
-  newPostsController,
+  newPostController,
   getSinglePostController,
   deletePostController,
 } = require('./controllers/Posts');
@@ -20,6 +20,7 @@ const {
 const { authUser } = require('./middlewares/auth');
 const likePost = require('./controllers/likeEntry');
 //falta middleware cors
+
 const app = express();
 
 app.use(fileUpload());
@@ -34,10 +35,12 @@ app.post('/user/login', loginController);
 
 //Rutas de posts
 app.post('/', getPostsController);
-app.get('/post/:id', getPostsController);
-app.post('/post', newPostsController);
+app.post('/', authUser, newPostController);
 app.get('/post/:id', getSinglePostController);
 app.delete('/post/id', deletePostController);
+
+//Rutas de photos
+//app.get('/', getPhotosController);
 
 // Middleware de 404
 app.use((req, res) => {
