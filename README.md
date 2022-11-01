@@ -11,12 +11,14 @@ La base de datos se crea usando querys de MySQL
   - email
   - password
   - created_at
-- Photo:
+- Post:
   - id
   - user
   - text (opcional)
   - image
   - created_at
+- Foto:
+  -id
 
 ## Endpoints
 
@@ -25,5 +27,6 @@ La base de datos se crea usando querys de MySQL
 - **POST /login** Login de usuario (devuelve token) ✅
 - **POST /** Permite crear un post(necesita cabecera con token) ✅
 - **GET /** Lista todos los post ✅
-- **GET /photo/:id** Deveuelve un post ✅
-- **DELETE /photo/:id** Borra una post sólo si eres quien lo creó ✅
+- **GET /post/:id** Deveuelve un post ✅
+- **DELETE /post/:id** Borra una post sólo si eres quien lo creó ✅
+- **GET /foto** devuelve una colección de fotos

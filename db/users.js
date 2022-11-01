@@ -63,12 +63,8 @@ const createUser = async (email, password) => {
     `,
       [email]
     );
-
     if (user.length > 0) {
-      throw generateError(
-        'Ya existe un usuario en la base de datos con ese email',
-        409
-      );
+      throw generateError('Ya existe un usuario con ese email ', 409);
     }
 
     //Encriptar la password

@@ -1,6 +1,6 @@
 module.exports = {
   instagram: {
-    clientId: "",
-    cientSecret: "",
+    clientId: '',
+    cientSecret: '',
   },
 };

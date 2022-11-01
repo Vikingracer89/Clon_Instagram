@@ -14,7 +14,7 @@ const newUserController = async (req, res, next) => {
     const validation = schema.validate({ email, password });
 
     if (validation.error) {
-      throw generateError('Los datos introducidos no son validos', 400);
+      throw generateError('Son necesarios un email y un password', 400);
     }
 
     const id = await createUser(email, password);
@@ -61,7 +61,7 @@ const loginController = async (req, res, next) => {
     const validation = schema.validate({ email, password });
 
     if (validation.error) {
-      throw generateError('Los datos introducidos no son validos', 400);
+      throw generateError('Los datos introducidos son incorrectos', 400);
     }
 
     // Recojo los datos de la base de datos del usuario con ese mail
@@ -71,10 +71,7 @@ const loginController = async (req, res, next) => {
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
-      throw generateError(
-        'El usuario o la contraseña contraseña no son validos',
-        401
-      );
+      throw generateError('El nombre o la contraseña no son validos', 401);
     }
 
     // Creo el payload del token
@@ -82,7 +79,7 @@ const loginController = async (req, res, next) => {
 
     // Firmo el token
     const token = jwt.sign(payload, process.env.SECRET, {
-      expiresIn: '30d',
+      expiresIn: '7d',
     });
 
     // Envío el token
