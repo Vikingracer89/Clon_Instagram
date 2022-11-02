@@ -39,7 +39,7 @@ const newPostController = async (req, res, next) => {
 
       //Procesar la imagen
       const image = sharp(req.files.image.data);
-      image.resize(1000);
+      image.resize({ heigth: 100 });
       //Guardo la imagen con un nombre aleatorio en el directorio uploads
     }
     imageFileName = '${nanoid(24)}.jpg';
@@ -50,15 +50,6 @@ const newPostController = async (req, res, next) => {
 
     // Creo el directorio si no existe
     await createPathIfNotExists(uploadsDir);
-
-    // Procesar la imagen a una altura de 100px y ancho autoescalado
-    const image = sharp(req.files.image.data);
-    image.resize({ height: 100 });
-
-    // Guardo la imagen con un nombre aleatorio en el directorio uploads
-    imageFileName = `${nanoid(24)}.jpg`;
-
-    await image.toFile(path.join(uploadsDir, imageFileName));
 
     const id = await createPost(req.userId, text && imageFileName);
     res.send({
@@ -72,8 +63,8 @@ const newPostController = async (req, res, next) => {
 
 const getSinglePostController = async (req, res, next) => {
   try {
-    const { text } = req.params;
-    const post = await getPostByText(text);
+    const { id } = req.params;
+    const post = await getPostByText(id);
 
     res.send({
       status: 'ok',

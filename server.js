@@ -37,7 +37,7 @@ app.post('/user/login', loginController);
 app.post('/', getPostsController);
 app.post('/', authUser, newPostController);
 app.get('/post/:id', getSinglePostController);
-app.delete('/post/id', deletePostController);
+app.delete('/post/id', authUser, deletePostController);
 
 //Rutas de photos
 //app.get('/', getPhotosController);
