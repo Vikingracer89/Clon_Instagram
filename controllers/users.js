@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { generateError } = require('../helpers');
 const { createUser, getUserById, getUserByEmail } = require('../db/users');
 const Joi = require('joi');
+const keys = require('../keys');
 
 const newUserController = async (req, res, next) => {
   try {
@@ -30,10 +31,9 @@ const newUserController = async (req, res, next) => {
 
 const getUserController = async (req, res, next) => {
   try {
-    const { id } = req.params;
-
-    const schema = Joi.number().positive().integer().requiered();
-    const validation = schema.validate(req.params);
+    const id = parseInt(req.params.id);
+    const schema = Joi.number().positive().integer().required();
+    const validation = schema.validate(id);
 
     if (validation.error) {
       throw generateError('El usuario debe ser un numero', 401);
@@ -78,7 +78,7 @@ const loginController = async (req, res, next) => {
     const payload = { id: user.id };
 
     // Firmo el token
-    const token = jwt.sign(payload, process.env.SECRET, {
+    const token = jwt.sign(payload, keys.jwtSecret, {
       expiresIn: '7d',
     });
 

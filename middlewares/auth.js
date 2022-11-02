@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { generateError } = require('../helpers');
+const keys = require('../keys');
 
 const authUser = (req, res, next) => {
   try {
@@ -12,7 +13,8 @@ const authUser = (req, res, next) => {
     let token;
 
     try {
-      token = jwt.verify(authorization, process.env.SECRET);
+      // eslint-disable-next-line no-undef
+      token = jwt.verify(authorization, keys.jwtSecret);
     } catch {
       throw generateError('Token incorrecto', 401);
     }

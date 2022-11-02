@@ -18,7 +18,7 @@ const {
 } = require('./controllers/Posts');
 
 const { authUser } = require('./middlewares/auth');
-const likePost = require('./controllers/likeEntry');
+// const likePost = require('./controllers/likeEntry');
 //falta middleware cors
 
 const app = express();
@@ -62,5 +62,5 @@ app.use((error, req, res, next) => {
 
 // Lanzamos el servidor
 app.listen(3000, () => {
-  console.log('Servidor funcionando! 👻');
+  console.log('Servidor funcionando en el puerto 3000 👻');
 });

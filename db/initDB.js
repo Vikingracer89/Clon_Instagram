@@ -1,8 +1,14 @@
-require('dotenv').config();
-
 const { getConnection } = require('./db');
 
-async function main() {
+async function addDummyData() {
+  const connection = await getConnection();
+
+  await connection.query(`
+    INSERT INTO users(email,password)
+    VALUES('test@test.com', 'password')`);
+}
+
+async function initDB() {
   let connection;
 
   try {
@@ -23,7 +29,7 @@ async function main() {
 
     await connection.query(`
       CREATE TABLE posts (
-        idposts INTEGER PRIMARY KEY AUTO_INCREMENT,
+        id INTEGER PRIMARY KEY AUTO_INCREMENT,
         user_id INTEGER NOT NULL,
         text VARCHAR (200) NOT NULL,
         image VARCHAR(100),
@@ -33,18 +39,21 @@ async function main() {
 
     await connection.query(`
        CREATE TABLE likes (
-         idlikes INT PRIMARY KEY AUTO_INCREMENT,
+         id INT PRIMARY KEY AUTO_INCREMENT,
+         user_id INT NOT NULL,
+         post_id INT NOT NULL,
          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-         photo_id INT NOT NULL,
-
        );
      `);
+
+    await addDummyData();
   } catch (error) {
     console.error(error);
   } finally {
     if (connection) connection.release();
+    // eslint-disable-next-line no-undef
     process.exit();
   }
 }
 
-main();
+initDB();

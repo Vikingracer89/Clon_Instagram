@@ -1,7 +1,8 @@
-const {createPost} = require('../db/posts');
-const { generateError,createPathIfNotExists} =require('../helpers');
-const path=require('path');
-const sharp =require('sharp');
+/* eslint-disable no-undef */
+const { createPost, getAllPosts } = require('../db/posts');
+const { generateError, createPathIfNotExists } = require('../helpers');
+const path = require('path');
+const sharp = require('sharp');
 const { nanoid } = require('nanoid');
 
 const getPostsController = async (req, res, next) => {
@@ -18,47 +19,46 @@ const getPostsController = async (req, res, next) => {
 };
 
 const newPostController = async (req, res, next) => {
-
   try {
     const { text } = req.body;
 
-    
-    if (!req.files.image && !req.text.length>280) {
-
-      throw generateError('Debes postear una foto con un texto menor de 280', 400);
+    if (!req.files.image && !req.text.length > 280) {
+      throw generateError(
+        'Debes postear una foto con un texto menor de 280',
+        400
+      );
     }
     let imageFileName;
 
     if (req.files && req.files.image) {
-      
       //Creo el path del directorio uploads
-const uploadsDir = path.join(__dirname,'../uploads');
-
-      //Creo el directorio si no existe
-await createPathIfNotExists(uploadsDir);
-
-      //Procesar la imagen
-const image = sharp (req.files.image.data)
-image.resize(1000);
-      //Guardo la imagen con un nombre aleatorio en el directorio uploads
-    }imageFileName = '${nanoid(24)}.jpg';
-
-  await image.toFile(path.join(uploadsDir,imageFileName));
-  
       const uploadsDir = path.join(__dirname, '../uploads');
 
-      // Creo el directorio si no existe
+      //Creo el directorio si no existe
       await createPathIfNotExists(uploadsDir);
 
-      // Procesar la imagen a una altura de 100px y ancho autoescalado
+      //Procesar la imagen
       const image = sharp(req.files.image.data);
-      image.resize({ height: 100 });
-
-      // Guardo la imagen con un nombre aleatorio en el directorio uploads
-      imageFileName = `${nanoid(24)}.jpg`;
-
-      await image.toFile(path.join(uploadsDir, imageFileName));
+      image.resize(1000);
+      //Guardo la imagen con un nombre aleatorio en el directorio uploads
     }
+    imageFileName = '${nanoid(24)}.jpg';
+
+    await image.toFile(path.join(uploadsDir, imageFileName));
+
+    const uploadsDir = path.join(__dirname, '../uploads');
+
+    // Creo el directorio si no existe
+    await createPathIfNotExists(uploadsDir);
+
+    // Procesar la imagen a una altura de 100px y ancho autoescalado
+    const image = sharp(req.files.image.data);
+    image.resize({ height: 100 });
+
+    // Guardo la imagen con un nombre aleatorio en el directorio uploads
+    imageFileName = `${nanoid(24)}.jpg`;
+
+    await image.toFile(path.join(uploadsDir, imageFileName));
 
     const id = await createPost(req.userId, text && imageFileName);
     res.send({
@@ -67,7 +67,8 @@ image.resize(1000);
     });
   } catch (error) {
     next(error);
-  };
+  }
+};
 
 const getSinglePostController = async (req, res, next) => {
   try {

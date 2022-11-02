@@ -1,4 +1,4 @@
-const { generateError } = require('../helpers');
+// const { generateError } = require('../helpers');
 const { getConnection } = require('./db');
 
 const createPost = async (userId, text, image = '') => {
@@ -10,7 +10,7 @@ const createPost = async (userId, text, image = '') => {
     const [result] = await connection.query(
       `
       INSERT INTO posts(user_id,text,image)
-      VALUES(?,?;?)
+      VALUES(?,?,?)
     `,
       [userId, text, image]
     );
@@ -21,10 +21,14 @@ const createPost = async (userId, text, image = '') => {
   }
 };
 
+const getAllPosts = async () => {
+  return [];
+};
+
 module.exports = {
   createPost,
   getAllPosts,
-  getPostById,
-  detelePostById,
-  getPostByText,
+  // getPostById,
+  // detelePostById,
+  // getPostByText,
 };
