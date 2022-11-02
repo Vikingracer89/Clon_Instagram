@@ -3,7 +3,7 @@ const { createPost, getAllPosts } = require('../db/posts');
 const { generateError, createPathIfNotExists } = require('../helpers');
 const path = require('path');
 const sharp = require('sharp');
-const {nanoid = require('nanoid');
+//const { nanoid } = require('nanoid');
 
 const getPostsController = async (req, res, next) => {
   try {
