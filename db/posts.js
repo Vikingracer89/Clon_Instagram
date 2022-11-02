@@ -50,7 +50,7 @@ const getAllPosts = async () => {
     connection = await getConnection();
 
     const [result] = await connection.query(`
-      SELECT * FROM posts ORDER BY created_at DESC
+      SELECT * FROM post ORDER BY created_at DESC
     `);
 
     return result;
