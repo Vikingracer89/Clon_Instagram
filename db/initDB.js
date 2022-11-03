@@ -1,17 +1,4 @@
 const { getConnection } = require('./db');
-const bcrypt = require('bcrypt');
-
-async function addDummyData() {
-  const connection = await getConnection();
-
-  const passwordHash = await bcrypt.hash('password', 8);
-  await connection.query(
-    `
-    INSERT INTO users(email,password)
-    VALUES(?, ?)`,
-    ['test@test.com', passwordHash]
-  );
-}
 
 async function initDB() {
   let connection;
@@ -53,7 +40,16 @@ async function initDB() {
        );
      `);
 
-    await addDummyData();
+    // Create foreign keys
+    await connection.query(`
+      ALTER TABLE posts ADD FOREIGN KEY (user_id) REFERENCES users(id);
+    `);
+    await connection.query(`
+      ALTER TABLE likes ADD FOREIGN KEY (user_id) REFERENCES users(id);
+    `);
+    await connection.query(`
+      ALTER TABLE likes ADD FOREIGN KEY (post_id) REFERENCES posts(id);
+    `);
   } catch (error) {
     console.error(error);
   } finally {

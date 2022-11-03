@@ -16,28 +16,34 @@ const {
   getSinglePostController,
   deletePostController,
 } = require('./controllers/Posts');
+const cors = require('cors');
 
 const { authUser } = require('./middlewares/auth');
 // const likePost = require('./controllers/likeEntry');
-//falta middleware cors
 
-const app = express();
+var app = express();
 
+var corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(fileUpload());
 app.use(express.json());
 app.use(morgan('dev'));
 app.use('/uploads', express.static('./uploads'));
 
 //Rutas de usuario
-app.post('/user', newUserController);
 app.get('/user/:id', getUserController);
 app.post('/user/login', loginController);
+app.post('/user/register', newUserController);
 
 //Rutas de posts
-app.post('/', getPostsController);
-app.post('/', authUser, newPostController);
+app.get('/posts', getPostsController);
+app.post('/post/create', authUser, newPostController);
 app.get('/post/:id', getSinglePostController);
-app.delete('/post/id', authUser, deletePostController);
+app.delete('/post/delete/:id', authUser, deletePostController);
 
 //Rutas de photos
 //app.get('/', getPhotosController);
@@ -61,6 +67,6 @@ app.use((error, req, res, next) => {
 });
 
 // Lanzamos el servidor
-app.listen(3000, () => {
-  console.log('Servidor funcionando en el puerto 3000 👻');
+app.listen(8080, () => {
+  console.log('Servidor funcionando en el puerto 8080 👻');
 });
